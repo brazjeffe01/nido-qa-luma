@@ -1,0 +1,23 @@
+{
+  "name": "nido-qa-luma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brazjeffe01/nido-qa-luma.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brazjeffe01/nido-qa-luma/issues"
+  },
+  "homepage": "https://github.com/brazjeffe01/nido-qa-luma#readme",
+  "dependencies": {
+    "cypress": "^14.5.3"
+  }
+}

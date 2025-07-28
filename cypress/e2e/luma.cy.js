@@ -10,7 +10,7 @@ describe('Validações na QA Luma Store', () => {
 
         })
 
-        it('Realizando cadastro de usuário', () => {
+        it('Deve realizar cadastro de usuário', () => {
 
             cy.contains('a','Create an Account').click()
             cy.url().should('contain','/account/create/')
@@ -34,7 +34,7 @@ describe('Validações na QA Luma Store', () => {
             })
         })
 
-        it('Finalizando compra do último produto sugerido na busca', () => {
+        it('Deve finalizar compra do último produto sugerido na busca', () => {
 
             cy.intercept('GET','**/suggest/?q=shirt**').as('resultadoPesquisa')
             cy.intercept('GET','**/Magento_Ui/**').as('aguardaReq')
@@ -107,17 +107,89 @@ describe('Validações na QA Luma Store', () => {
         })
     })
 
-    context('Validações gerais', () => {
+    context.only('Validações gerais', () => {
         beforeEach(() => {
 
         cy.visit('/')
 
         })
 
-        it('Validando a Home Page', () => {
+        it('Deve validar a Home Page', () => {
 
             cy.contains('span','Home Page').should('be.visible')
             cy.log('Estamos na página principal!')
+        })
+
+        it('Deve adicionar um produto aleatório masculino no carrinho', () => {
+
+            cy.intercept('GET', '**customer/section/load/**').as('aguardaCarrinho')
+
+            cy.get('li.nav-3').click()
+            cy.contains('li.item a','Tops').click()
+            cy.get('img.product-image-photo').then((products) => {
+                const randomProduct = Math.floor(Math.random() * (products.length - 1))
+                cy.get('img.product-image-photo').eq(randomProduct).click()
+            })
+
+            cy.get('div.size div.swatch-option').eq(0).click()
+            cy.get('div.color div.swatch-option').eq(0).click()
+
+            cy.get("button#product-addtocart-button").click({timeout: 5000})
+
+            cy.get('h1.page-title span').then((product) => {
+                cy.wait('@aguardaCarrinho').then(() => cy.get("div[role='alert']")
+                    .should('be.visible')
+                    .and('contain',`You added ${product.text()} to your shopping cart.`))
+                cy.get('a.showcart').click()
+                cy.get('div.block-minicart strong.product-item-name a')
+                    .should('be.visible')
+                    .and('contain', product.text())
+            })
+
+            cy.log('Produto aleatório do catálogo masculino adicionado ao carrinho!')
+        })
+
+        it.only('Deve adicionar um comentário em um produto aleatório do catálogo de moda masculino no carrinho', () => {
+
+            cy.intercept('GET', '**customer/section/load/**').as('aguardaCarrinho')
+
+            Cypress._.times(3, () => {
+                cy.get('li.nav-3').click()
+                cy.contains('li.item a','Tops').click()
+                cy.get('img.product-image-photo').then((products) => {
+                    const randomProduct = Math.floor(Math.random() * (products.length - 1))
+                    cy.get('img.product-image-photo').eq(randomProduct).click()
+                })
+
+                cy.get('div.size div.swatch-option').eq(0).click()
+                cy.get('div.color div.swatch-option').eq(0).click()
+
+                cy.get("button#product-addtocart-button").click({timeout: 5000})
+
+                cy.get('h1.page-title span').then((product) => {
+                    cy.wait('@aguardaCarrinho').then(() => cy.get("div[role='alert']")
+                        .should('be.visible')
+                        .and('contain',`You added ${product.text()} to your shopping cart.`))
+                })
+            })
+
+            cy.get('a.showcart').click()
+            cy.get('div.block-minicart').should('be.visible')
+            cy.get('ol#mini-cart div.product-item-details').then((products) => {
+                    const randomProduct = Math.floor(Math.random() * (products.length - 1))
+                    cy.get('img.product-image-photo').eq(randomProduct).click()
+                })
+            cy.contains('a.switch','Reviews').click()
+            cy.get("label[for='Rating_5']").click({force: true})
+            cy.get("input[name='nickname']").type('Cypress Testing')
+            cy.get("input[name='title']").type('Cypress Testing')
+            cy.get("textarea[name='detail']").type('Testando aqui!!')
+            cy.contains("button[type='submit']", 'Submit Review').click()
+
+            cy.wait('@aguardaCarrinho').then(() => cy.get("div[role='alert']")
+                .should('be.visible')
+                .and('contain',`You submitted your review for moderation.`))
+            
         })
     })
 })

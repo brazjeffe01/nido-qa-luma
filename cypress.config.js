@@ -7,4 +7,5 @@ module.exports = defineConfig({
     },
     baseUrl: 'https://magento.softwaretestingboard.com/'
   },
+  defaultCommandTimeout: 10000
 });

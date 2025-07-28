@@ -16,17 +16,15 @@ describe('Validações na QA Luma Store', () => {
     it.only('Finalizando compra do último produto sugerido na busca', () => {
 
         cy.intercept('GET','**/suggest/?q=shirt**').as('resultadoPesquisa')
+        cy.intercept('GET','**/Magento_Ui/**').as('aguardaReq')
+        cy.intercept('GET', '**customer/section/load/**').as('esperaCarrinho')
 
-        cy.get("input[id='search']").type('shirt', {timeout: 10000})
+        cy.wait('@aguardaReq').then(() => cy.get("input[id='search']").type('shirt'))
 
         cy.wait('@resultadoPesquisa').then(() => {
             cy.get('div#search_autocomplete')
                 .should('be.visible')
-                .find("li[role='option']").then((list) => {
-
-                    cy.get("li[role='option']").eq(list.length - 1).click()
-                    
-                })   
+                .find("li[role='option']").then((list) => cy.get("li[role='option']").eq(list.length - 1).click())   
         })
 
         cy.url().should('include','/catalogsearch/result/')
@@ -35,9 +33,14 @@ describe('Validações na QA Luma Store', () => {
         cy.get('div.size div.swatch-option').eq(0).click()
         cy.get('div.color div.swatch-option').eq(0).click()
 
-        cy.get("button[title='Add to Cart']").click()
+        cy.get("button#product-addtocart-button").click({timeout: 5000})
 
-        cy.contains("div[role='alert']",'to your shopping cart.').should('be.visible')
+        cy.get('h1.page-title span').then((product) => {
+            cy.wait('@esperaCarrinho').then(() => cy.get("div[role='alert']")
+                .should('be.visible'))
+                .and('contain',`You added ${product.text()} to your shopping cart.`)
+        })
+        
     })
 
     it('Realizando cadastro de usuário', () => {

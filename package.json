@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "delete-results": "rm -rf cypress/results/* || true",
+    "mochawesome-merge": "npx mochawesome-merge cypress/results/mochawesome/*.json > mochawesome.json && npx marge mochawesome.json",
+    "delete-mochawesome-report": "rm -rf mochawesome-report/* || true",
+    "cy:run-reports": "npm run delete-results && npm run delete-mochawesome-report && npx cypress run && npm run mochawesome-merge"
   },
   "repository": {
     "type": "git",
@@ -19,5 +23,12 @@
   "homepage": "https://github.com/brazjeffe01/nido-qa-luma#readme",
   "dependencies": {
     "cypress": "^14.5.3"
+  },
+  "devDependencies": {
+    "cypress-multi-reporters": "^2.0.5",
+    "mocha-junit-reporter": "^2.2.1",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^5.0.0",
+    "mochawesome-report-generator": "^6.2.0"
   }
 }

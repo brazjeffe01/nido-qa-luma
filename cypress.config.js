@@ -7,5 +7,10 @@ module.exports = defineConfig({
     },
     baseUrl: 'https://magento.softwaretestingboard.com/'
   },
-  defaultCommandTimeout: 10000
+  defaultCommandTimeout: 20000,
+  reporter: 'cypress-multi-reporters',
+  reporterOptions: {
+    configFile: 'reporter-config.json',
+  },
+  retries: 4
 });

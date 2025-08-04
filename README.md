@@ -1,8 +1,6 @@
-# QA Luma Store (NIDA Tecnologia)
+# QA Luma Store
 
-Projeto desenvolvido como parte do processo seletivo para a vaga de Analista de QA na NIDA Tecnologia, utilizando o site https://magento.softwaretestingboard.com/.
-
-Nesse projeto focado em testes de sistema, foram criados tantos testes de ponta-a-ponta (E2E), quanto testes em funcionalidades mais específicas, utilizando o Cypress como framework de testes automatizados.
+Projeto desenvolvido utilizando o site https://magento.softwaretestingboard.com/, nesse projeto focado em testes de sistema, foram criados tantos testes de ponta-a-ponta (E2E), quanto testes em funcionalidades mais específicas, utilizando o Cypress como framework de testes automatizados.
 
 ## Por que escolhi o Cypress para o projeto
 
